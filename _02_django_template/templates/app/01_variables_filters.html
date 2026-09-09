@@ -1,0 +1,47 @@
+
+{# Django 템플릿 한 줄 주석 #}
+
+{% comment %}
+여러
+줄
+주석
+{% endcomment %}
+
+{# {{ key }} : 변수 값 출력 #}
+
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+  <h1>Variable/Filters</h1>
+  <p><img src = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTFyVDItPGBUJeGVGr1JO6RQwg71btVmbDrdThXptNRVntuGZaty2F_zB4&s=10'></p>
+
+  <h2>Variable</h2>
+
+  {# render() 호출 시 전달된 context 값을 이용 가능 #}
+  {# context로 전달된 dict 중 key가 name인 값을 출력 #}
+  <p>My name is {{ name }}.</p>
+  <p>I am {{ age }} years old.</p>
+
+  {# 인덱스 번호 작성법 : .index 번호 #}
+  <p>{{ users.0.id }} {{ users.0.name }}</p>
+
+  <p>{{ name|upper }}</p>
+  <p>{{ age|add:1 }}</p>
+  <p>{{ age|add:num|add:5 }}</p>
+  <p>{{ today|date:"Y/m/d (D) A h:i:s" }}</p>
+
+  {# now : 현재 탬플릿이 렌더링 된 시간을 반환하는 함수 #}
+  {% now "Y" as current_year %}
+  <p>올해는 {{ current_year }}년이다.</p>
+
+  {% with username='gogd' x=1234 %}
+    <p>{{ username }} / {{ x }}</p>
+  {% endwith %}
+
+  <p>블록 밖: {{ username }} / {{ x }}</p>
+</body>
+</html>
