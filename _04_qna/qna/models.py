@@ -11,6 +11,7 @@ class Question(models.Model):
 
     # - N:M 관계 -> 중간 테이블을 자동 생성
     # - 중간 테이블을 사용하기 위한 중간 모델의 이름
+    # - related_name == 'question_votes'
     voters = models.ManyToManyField(User, related_name='question_votes')
 
 # Answer(N) : User(1)

@@ -1,10 +1,17 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django.core.files.uploadedfile import UploadedFile
+from .models import UserDetail
 
-
+# UserCreationForm
+# 1. id, pw 입력 -> auth_user 테이블에서 조회
+#    -> 있으면 정상조회, 없으면 로그인 실패
+# 2. 회원가입 : auth_user 테이블에 insert
+# + 간단한 유효성 검사
 class UserForm(UserCreationForm):
     # UserCreationForm이 비밀번호 검증·해시를 처리하고 프로필 정보는 별도 모델에 저장한다.
+    # required=False : 필수 아님
     birthday = forms.DateField(label='Birthday', required=False)
     profile = forms.ImageField(label='Profile', required=False)
 
@@ -24,5 +31,21 @@ class UserForm(UserCreationForm):
         # 성공한 반환값은 cleaned_data['profile']을 거쳐 UserDetail 저장에 사용한다.
         profile = self.cleaned_data.get('profile')
         if profile and profile.size > 5 * 1024 * 1024:
+            raise forms.ValidationError('프로필은 5MB 이하로 업로드한다.')
+        return profile
+
+
+class ProfileForm(forms.ModelForm):
+    # user는 입력받지 않고 View에서 로그인 사용자로 지정한다.
+    class Meta:
+        model = UserDetail
+        fields = ['birthday', 'profile']
+        labels = {'birthday': '생일', 'profile': '프로필 이미지'}
+        widgets = {'birthday': forms.DateInput(format='%Y-%m-%d', attrs={'type': 'date'})}
+
+    def clean_profile(self):
+        # 새 업로드에만 용량을 검사한다. 파일을 선택하지 않으면 instance의 기존 이미지를 유지한다.
+        profile = self.cleaned_data.get('profile')
+        if isinstance(profile, UploadedFile) and profile.size > 5 * 1024 * 1024:
             raise forms.ValidationError('프로필은 5MB 이하로 업로드한다.')
         return profile

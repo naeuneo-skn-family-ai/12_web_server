@@ -15,6 +15,8 @@ document.querySelectorAll('.recommend').forEach((button) => {
         event.preventDefault();
         if (!requireLogin()) return;
         try {
+            button.disabled = true;
+
             // 추천할 객체는 URL에 담겨 있다. CSRF 토큰은 세션을 사용하는 POST를 보호한다.
             const response = await fetch(button.dataset.uri, {method: 'POST', headers: {'X-CSRFToken': csrf}});
             if (!response.ok) throw new Error('추천 요청을 처리하지 못했습니다.');
@@ -22,6 +24,7 @@ document.querySelectorAll('.recommend').forEach((button) => {
             const data = await response.json();
             button.querySelector('span').textContent = data.vote_count;
         } catch (error) { alert(error.message); }
+        finally { button.disabled = false; }
     });
 });
 document.querySelectorAll('[data-answer-id]').forEach((button) => {

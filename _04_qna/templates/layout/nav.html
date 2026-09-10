@@ -23,6 +23,8 @@
         <ul class="navbar-nav mb-2 mb-lg-0">
           {# 기본 auth context processor가 현재 request.user를 user라는 이름으로 전달한다. #}
           {% if user.is_authenticated %}
+              <li class="nav-item"><a class="nav-link" href="{% url 'uauth:profile_edit' %}">프로필 수정</a></li>
+              <li class="nav-item"><a class="nav-link" href="{% url 'uauth:password_change' %}">비밀번호 변경</a></li>
             <li class="nav-item">
               <a class="nav-link" href="#" title="{{ user.username }}">
                 {# 파일 존재를 먼저 확인한다. 비어 있는 ImageField의 .url을 바로 읽지 않는다. #}
